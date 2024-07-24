@@ -19,6 +19,7 @@ export class Codebuild extends cdk.Stack {
       synth: new ShellStep("Synth", {
         input: CodePipelineSource.connection(`${REPO_OWNER}/${REPO}`, "main", {
           connectionArn: CONNECTION_ARN,
+          triggerOnPush: true,
         }),
         commands: [
           "npm ci",
