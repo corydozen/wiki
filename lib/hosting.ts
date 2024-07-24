@@ -92,7 +92,7 @@ export class HostingStack extends Stack {
     });
 
     new BucketDeployment(this, "DeployWebsite", {
-      sources: [Source.asset("../src/.next/out")],
+      sources: [Source.asset("./src/.next/out")],
       destinationBucket: websiteBucket,
       distribution,
       distributionPaths: ["/*"],
