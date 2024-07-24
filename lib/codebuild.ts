@@ -6,14 +6,13 @@ import {
 } from "aws-cdk-lib/pipelines";
 import { Construct } from "constructs";
 import { HostingStage } from "./hosting-stage";
+import { CONNECTION_ARN_UUID, REPO, REPO_OWNER } from "./constants";
 
 export class Codebuild extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const REPO_OWNER = "murribu";
-    const REPO = "wiki";
-    const CONNECTION_ARN = `arn:aws:codestar-connections:us-east-1:${this.account}:connection/26f04c1c-348b-433a-9156-3bf04922e21c`;
+    const CONNECTION_ARN = `arn:aws:codestar-connections:us-east-1:${this.account}:connection/${CONNECTION_ARN_UUID}`;
 
     const pipeline = new CodePipeline(this, "WikiPipeline", {
       synth: new ShellStep("Synth", {
