@@ -12,15 +12,24 @@ import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
 import { Code, Runtime } from "aws-cdk-lib/aws-lambda";
 import { BlockPublicAccess, Bucket } from "aws-cdk-lib/aws-s3";
 import { BucketDeployment, Source } from "aws-cdk-lib/aws-s3-deployment";
+import { Secret } from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from "constructs";
-import { CERT_ARN_UUID, DOMAIN } from "./constants";
 import path = require("path");
 
 export class HostingStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const CERT_ARN = `arn:aws:acm:us-east-1:${this.account}:certificate/${CERT_ARN_UUID}`;
+    const secret = Secret.fromSecretNameV2(this, "Secret", "WIKI");
+
+    const CERT_ARN = secret
+      .secretValueFromJson("CERT_ARN")
+      .unsafeUnwrap()
+      .toString();
+    const DOMAIN = secret
+      .secretValueFromJson("DOMAIN")
+      .unsafeUnwrap()
+      .toString();
 
     const websiteBucket = new Bucket(this, "WebsiteBucket", {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
@@ -81,5 +90,14 @@ export class HostingStack extends Stack {
       distribution,
       distributionPaths: ["/*"],
     });
+
+    // This will not synth locally, so it'll be a manual step for now
+    // new ARecord(this, "AliasRecord", {
+    //   zone: HostedZone.fromLookup(this, "HostedZone", {
+    //     domainName: DOMAIN,
+    //   }),
+    //   target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
+    //   recordName: DOMAIN,
+    // });
   }
 }

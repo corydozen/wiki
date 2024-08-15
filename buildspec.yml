@@ -1,0 +1,31 @@
+version: 0.2
+
+env:
+  secrets-manager:
+    CERT_ARN: WIKI:CERT_ARN
+    DISTRIBUTION_ID: WIKI:DISTRIBUTION_ID
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - chmod +x bash/makeConfig.sh
+      - bash/makeConfig.sh
+      - npm install -g aws-cdk
+  pre_build:
+    commands:
+      - yarn
+      - wait $!
+      - yarn build
+      - cd src
+      - npx dendron publish export
+      - cd ..
+  build:
+    commands:
+      - npx cdk deploy WikiHostingStack --require-approval never
+      - aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "/*"
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - "**/*"
