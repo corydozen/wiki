@@ -1,4 +1,4 @@
-import * as cdk from "aws-cdk-lib";
+import { Stack, StackProps } from "aws-cdk-lib";
 import {
   BuildSpec,
   LinuxBuildImage,
@@ -9,13 +9,14 @@ import {
   CodeBuildAction,
   CodeStarConnectionsSourceAction,
 } from "aws-cdk-lib/aws-codepipeline-actions";
+import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
 import { config } from "../config";
 
 const { repo, connectionArn, repoOwner } = config;
 
-export class Codebuild extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+export class Codebuild extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
     const pipeline = new Pipeline(this, "WikiPipeline", {
@@ -39,43 +40,41 @@ export class Codebuild extends cdk.Stack {
       ],
     });
 
-    pipeline.addStage({
-      stageName: "Build",
-      actions: [
-        new CodeBuildAction({
-          actionName: "Build",
-          project: new PipelineProject(this, "BuildProject", {
-            buildSpec: BuildSpec.fromSourceFilename("buildspec.yml"),
-            environment: {
-              buildImage: LinuxBuildImage.STANDARD_7_0,
-            },
-          }),
-          input: artifact,
-        }),
-      ],
+    const project = new PipelineProject(this, "BuildProject", {
+      buildSpec: BuildSpec.fromSourceFilename("buildspec.yml"),
+      environment: {
+        buildImage: LinuxBuildImage.STANDARD_7_0,
+      },
     });
 
-    // const pipeline = new CodePipeline(this, "WikiPipeline", {
-    //   synth: new ShellStep("Synth", {
-    //     input: CodePipelineSource.connection(`${REPO_OWNER}/${REPO}`, "main", {
-    //       connectionArn: CONNECTION_ARN,
-    //       triggerOnPush: true,
-    //     }),
-    //     commands: [
-    //       "npm ci",
-    //       "cd src",
-    //       "npx dendron publish export",
-    //       "cd ..",
-    //       "npm run build",
-    //       "npx cdk synth",
-    //     ],
-    //   }),
-    // });
+    project.role?.addToPrincipalPolicy(
+      new PolicyStatement({
+        actions: [
+          "secretsmanager:GetSecretValue",
+          "cloudfront:*",
+          "s3:*",
+          "acm:GetAccountConfiguration",
+          "acm:DescribeCertificate",
+          "acm:GetCertificate",
+          "acm:ListCertificates",
+          "acm:ListTagsForCertificate",
+          "ssm:GetParameter",
+          "cloudformation:*",
+          "iam:PassRole",
+        ],
+        resources: ["*"],
+      })
+    );
 
-    // const hostingStage = new HostingStage(this, "HostingStage", {
-    //   env: { region: "us-east-1" },
-    // });
+    const action = new CodeBuildAction({
+      actionName: "Build",
+      project,
+      input: artifact,
+    });
 
-    // pipeline.addStage(hostingStage);
+    pipeline.addStage({
+      stageName: "Build",
+      actions: [action],
+    });
   }
 }
