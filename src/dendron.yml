@@ -87,18 +87,23 @@ publishing:
     enablePrettyRefs: true
     enableKatex: true
     copyAssets: true
+    siteUrl: https://corymartin.click
+    siteIndex: home
     siteHierarchies:
-        - root
+        - home
+        - posts
+        - glossary
     writeStubs: false
-    siteRootDir: docs
+    siteRootDir: src
     seo:
-        title: Dendron
-        description: Personal Knowledge Space
+        title: Cory Martin Dot Click
+        description: Cory's Wiki Example
     github:
         enableEditLink: true
         editLinkText: Edit this page on GitHub
-        editBranch: main
-        editViewMode: tree
+        editBranch: main/src
+        editViewMode: edit
+        editRepository: https://github.com/murribu/wiki
     enableSiteLastModified: true
     enableFrontmatterTags: true
     enableHashesForFMTags: false
