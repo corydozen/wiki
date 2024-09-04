@@ -2,7 +2,6 @@ version: 0.2
 
 env:
   secrets-manager:
-    CERT_ARN: WIKI:CERT_ARN
     DISTRIBUTION_ID: WIKI:DISTRIBUTION_ID
 
 phases:
