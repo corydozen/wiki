@@ -2,7 +2,7 @@
 id: cicd-wiki
 title: Cicd Wiki
 desc: ""
-updated: 1725658972301
+updated: 1725914830395
 created: 1725054269958
 ---
 
@@ -185,6 +185,8 @@ There are two stacks in this project.
 #### Codebuild
 
 This sets up the Pipeline that will pick up any changes that are pushed to the repo and deploy them out to your site. You can see the code [here](https://github.com/murribu/wiki/blob/main/lib/codebuild.ts).
+
+One quirk was that the cdk does not yet natively support adding triggers to a pipeline that are based on anything other than tags. But I would like to trigger the pipeline when there is a change to any note in the `src` folder. Fortunately, the cdk provides an “escape hatch” where you can reference the underlying CloudFormation object. I used [this comment](https://github.com/aws/aws-cdk/issues/29124#issuecomment-2134977965) to help me. It looks like this functionality is about to be updated with [this commit](https://github.com/aws/aws-cdk/commit/ddbbd002da6298679500d4dd6b6c5b1487bd5f5d).
 
 #### Hosting
 
