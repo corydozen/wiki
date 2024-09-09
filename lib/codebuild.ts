@@ -4,7 +4,12 @@ import {
   LinuxBuildImage,
   PipelineProject,
 } from "aws-cdk-lib/aws-codebuild";
-import { Artifact, Pipeline, PipelineType } from "aws-cdk-lib/aws-codepipeline";
+import {
+  Artifact,
+  CfnPipeline,
+  Pipeline,
+  PipelineType,
+} from "aws-cdk-lib/aws-codepipeline";
 import {
   CodeBuildAction,
   CodeStarConnectionsSourceAction,
@@ -15,6 +20,8 @@ import { config } from "../config";
 
 const { repo, connectionArn, repoOwner } = config;
 
+const actionName = "GitHub";
+
 export class Codebuild extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
@@ -22,15 +29,50 @@ export class Codebuild extends Stack {
     const pipeline = new Pipeline(this, "WikiPipeline", {
       pipelineName: "WikiPipeline",
       pipelineType: PipelineType.V2,
+      // triggers: [
+      //   {
+      //     providerType: ProviderType.CODE_STAR_SOURCE_CONNECTION,
+      //     gitConfiguration: {
+      //       sourceAction,
+      //       pushFilter: [
+      //         {
+      //           branchesIncludes: ["main"],
+      //           filePathsIncludes: ["src/**"],
+      //         },
+      //       ],
+      //     },
+      //   },
+      // ],
     });
 
     const artifact = new Artifact();
+
+    const cfnPipeline = pipeline.node.defaultChild as CfnPipeline;
+
+    cfnPipeline.addPropertyOverride("Triggers", [
+      {
+        GitConfiguration: {
+          Push: [
+            {
+              Branches: {
+                Includes: ["main"],
+              },
+              FilePaths: {
+                Includes: ["src/**"],
+              },
+            },
+          ],
+          SourceActionName: actionName,
+        },
+        ProviderType: "CodeStarSourceConnection",
+      },
+    ]);
 
     pipeline.addStage({
       stageName: "Source",
       actions: [
         new CodeStarConnectionsSourceAction({
-          actionName: "GitHub",
+          actionName,
           owner: repoOwner,
           repo,
           output: artifact,
