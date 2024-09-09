@@ -7,6 +7,7 @@ import {
 import {
   Artifact,
   CfnPipeline,
+  ExecutionMode,
   Pipeline,
   PipelineType,
 } from "aws-cdk-lib/aws-codepipeline";
@@ -29,6 +30,7 @@ export class Codebuild extends Stack {
     const pipeline = new Pipeline(this, "WikiPipeline", {
       pipelineName: "WikiPipeline",
       pipelineType: PipelineType.V2,
+      executionMode: ExecutionMode.QUEUED,
       // triggers: [
       //   {
       //     providerType: ProviderType.CODE_STAR_SOURCE_CONNECTION,
