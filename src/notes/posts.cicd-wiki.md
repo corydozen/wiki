@@ -2,7 +2,7 @@
 id: cicd-wiki
 title: Cicd Wiki
 desc: ""
-updated: 1725915573466
+updated: 1726150062764
 created: 1725054269958
 ---
 
@@ -24,7 +24,7 @@ I will be using AWS’s CDK and an open source tool called Dendron. There will b
 
 ## Get a domain
 
-Once you’re logged in to your AWS account, visit https://us-east-1.console.aws.amazon.com/route53/domains/home#/DomainSearch to select your domain. I chose https://corymartin.click because the `click` TLD was the cheapest available through AWS. Three dollars per year! If you’d like to see other TLD prices, [here is a spreadsheet I created with those prices](https://docs.google.com/spreadsheets/d/1oVYl6f69f8w_J3JUSFsi6oZV5vHn9CzsIJSX9KE5qnY/edit).
+Once you’re logged in to your AWS account, visit [Route 53's domain search](https://us-east-1.console.aws.amazon.com/route53/domains/home#/DomainSearch) to select your domain. I chose https://corymartin.click because the `click` TLD was the cheapest available through AWS. Three dollars per year! If you’d like to see other TLD prices, [here is a spreadsheet I created with those prices](https://docs.google.com/spreadsheets/d/1oVYl6f69f8w_J3JUSFsi6oZV5vHn9CzsIJSX9KE5qnY/edit).
 
 Once you’ve selected your domain, enter your contact information and follow the directions for registration. Be sure the “Turn on privacy protection” checkbox is checked.
 
@@ -211,4 +211,4 @@ This simply creates an empty `config.ts` file so that the cdk stack will success
 
 #### Create invalidation
 
-When you update your wiki, you will want to tell Cloudfront not to serve up its old, cached version of your site anymore. The way to do that is to create an invalidation. You can read more about invalidations [here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html). You can see in the `buildspec.yml` file, the second command uses the aws cli tool to create an invalidation for all the objects within your cloudfront distribution. In order to do this, it needs to know your distribution’s ID. That’s why we stored it in your secret. You can see at the top of the `buildspec.yml` file, in the env->secrets-manager section, we are defining an environment variable called `DISTRIBUTION_ID` whose value comes from the attribution called `DISTRIBUTION_ID` within the secret named `WIKI`.
+When you update your wiki, you will want to tell Cloudfront not to serve up its old, cached version of your site anymore. The way to do that is to create an invalidation. You can read more about invalidations [here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html). You can see in the `buildspec.yml` file, the second-to-last command uses the aws cli tool to create an invalidation for all the objects within your cloudfront distribution. In order to do this, it needs to know your distribution’s ID. That’s why we stored it in your secret. You can see at the top of the `buildspec.yml` file, in the env->secrets-manager section, we are defining an environment variable called `DISTRIBUTION_ID` whose value comes from the attribute called `DISTRIBUTION_ID` within the secret named `WIKI`.
