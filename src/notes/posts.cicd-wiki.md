@@ -2,7 +2,7 @@
 id: cicd-wiki
 title: Cicd Wiki
 desc: ""
-updated: 1726150062764
+updated: 1726493002423
 created: 1725054269958
 ---
 
@@ -26,17 +26,17 @@ I will be using AWS’s CDK and an open source tool called Dendron. There will b
 
 Once you’re logged in to your AWS account, visit [Route 53's domain search](https://us-east-1.console.aws.amazon.com/route53/domains/home#/DomainSearch) to select your domain. I chose https://corymartin.click because the `click` TLD was the cheapest available through AWS. Three dollars per year! If you’d like to see other TLD prices, [here is a spreadsheet I created with those prices](https://docs.google.com/spreadsheets/d/1oVYl6f69f8w_J3JUSFsi6oZV5vHn9CzsIJSX9KE5qnY/edit).
 
-Once you’ve selected your domain, enter your contact information and follow the directions for registration. Be sure the “Turn on privacy protection” checkbox is checked.
+Once you’ve selected your domain, enter your contact information and follow the directions for registration. Be sure the "Turn on privacy protection" checkbox is checked.
 
 ## Get a certificate
 
 1. Visit AWS Certificate Manager [link](https://us-east-1.console.aws.amazon.com/acm/home?region=us-east-1#/certificates/list)
-1. Click “Request”
-1. Leave “Request a public certificate" selected and click “Next”
+1. Click "Request"
+1. Leave "Request a public certificate" selected and click "Next"
 1. Enter the domain you chose. I entered `corymartin.click`
-1. Leave all other default values and click “Request”
+1. Leave all other default values and click "Request"
 1. On the subsequent page, find the ARN and copy it into a text editor. You will need it later.
-1. On that same page, you should also see a section labeled “Domains” with a button that says “Create records in Route 53”. Click that button. Then confirm that selection by clicking “Create Records” on the next page.
+1. On that same page, you should also see a section labeled "Domains" with a button that says "Create records in Route 53". Click that button. Then confirm that selection by clicking "Create Records" on the next page.
 
 That’s all you have to do for this step. If you’d like, you can navigate back to Route 53 to see the records you just created.
 It may take a little time for the certificate to be granted. But you can continue with the next steps while waiting for the certificate.
@@ -54,12 +54,12 @@ There will be a section at the end where I discuss what all is going on in this 
 The following is a boiled down version of [this documentation](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-create-github.html).
 
 1. Create a connection in Codesuite to connect to your github account. [Click here](https://us-east-1.console.aws.amazon.com/codesuite/settings/connections/create) to go to the creation page.
-1. Select “GitHub”
+1. Select "GitHub"
 1. Name it whatever you like. (I named mine `murribu-github`) Then click on Create.
-1. Make sure you’re logged into your github account in the browser and click on “Install a new app”
-1. The next screen you see will be a github screen. I recommend choosing the “Only select repositories” option and selecting the one repository that is being used for this project.
-1. Click “Install”
-1. Click “Connect”
+1. Make sure you’re logged into your github account in the browser and click on "Install a new app"
+1. The next screen you see will be a github screen. I recommend choosing the "Only select repositories" option and selecting the one repository that is being used for this project.
+1. Click "Install"
+1. Click "Connect"
 1. Then click into the new connection and copy its ARN (you’ll use this in the next step).
 
 ## Configure with your info
@@ -79,12 +79,12 @@ Open up dendron.yml and replace the following entries with your appropriate data
 
 ## Create a secret
 
-Go to Secrets Manager, and click on “Store a new secret”. Choose “Other type of secret” and enter the following key/value pairs:
+Go to Secrets Manager, and click on "Store a new secret". Choose "Other type of secret" and enter the following key/value pairs:
 
 | Key             | Value                                                |
 | --------------- | ---------------------------------------------------- |
 | DOMAIN          | The domain you registered. Mine is corymartin.click  |
-| CERT_ARN        | The ARN you copied from the “Get a certificate” step |
+| CERT_ARN        | The ARN you copied from the "Get a certificate" step |
 | DISTRIBUTION_ID | Leave blank initially. We’ll fill this in later      |
 
 ## Install dendron cli
@@ -137,10 +137,10 @@ Then click on Create Record
 
 On the subsequent screen, there are 4 steps.
 
-1. Toggle on the “Alias” button
-1. Select “Alias to CloudFront distribution”
-1. In the “Choose distribution” input box, select the distribution that you just created.
-1. Click “Create records”
+1. Toggle on the "Alias" button
+1. Select "Alias to CloudFront distribution"
+1. In the "Choose distribution" input box, select the distribution that you just created.
+1. Click "Create records"
 
 ![Image of the Quick create record screen, highlighting the 4 steps outlined above](./assets/create-record.png "Quick Create Record")
 
@@ -176,7 +176,7 @@ In the codebuild stack, I gave the project’s role some privileges that I proba
 
 ### Lambda@Edge
 
-Dendron creates `index.html` pages for each of the notes. In order to have neat URLs, I wanted links like https://corymartin.click/notes/home. So the lambda@edge function appends the “index.html” to the end of URIs when appropriate.
+Dendron creates `index.html` pages for each of the notes. In order to have neat URLs, I wanted links like https://corymartin.click/notes/home. So the lambda@edge function appends the "index.html" to the end of URIs when appropriate.
 
 ### CDK Stacks
 
@@ -186,7 +186,7 @@ There are two stacks in this project.
 
 This sets up the Pipeline that will pick up any changes that are pushed to the repo and deploy them out to your site. You can see the code [here](https://github.com/murribu/wiki/blob/main/lib/codebuild.ts).
 
-One quirk was that the cdk does not yet natively support adding triggers to a pipeline that are based on anything other than tags. But I would like to trigger the pipeline when there is a change to any note in the `src` folder. Fortunately, the cdk provides an “escape hatch” where you can reference the underlying CloudFormation object. I used [this comment](https://github.com/aws/aws-cdk/issues/29124#issuecomment-2134977965) to help me. It looks like this functionality is about to be updated with [this commit](https://github.com/aws/aws-cdk/commit/ddbbd002da6298679500d4dd6b6c5b1487bd5f5d).
+One quirk was that the cdk does not yet natively support adding triggers to a pipeline that are based on anything other than tags. But I would like to trigger the pipeline when there is a change to any note in the `src` folder. Fortunately, the cdk provides an "escape hatch" where you can reference the underlying CloudFormation object. I used [this comment](https://github.com/aws/aws-cdk/issues/29124#issuecomment-2134977965) to help me. It looks like this functionality is about to be updated with [this commit](https://github.com/aws/aws-cdk/commit/ddbbd002da6298679500d4dd6b6c5b1487bd5f5d).
 
 #### Hosting
 
@@ -197,11 +197,11 @@ This code establishes the s3 bucket and cloudfront distribution to host your sit
 #### Hierarchies
 
 You can specify the hierarchies you would like to appear on the left side. For demonstration purposes, I chose 3: home, posts, and glossary.
-You can then create markdown files for those hierarchies, if you like. Say, `posts.md`. This will be the “homepage” for that hierarchy. If you don’t create one, dendron will generate one for you.
+You can then create markdown files for those hierarchies, if you like. Say, `posts.md`. This will be the "homepage" for that hierarchy. If you don’t create one, dendron will generate one for you.
 
 #### Edit on github
 
-If you would like to enable the “edit on github” feature, you can set the `enableEditLink` to true. With this setup, You will need to set the `editBranch` attribute in the dendron.yml file to “main/src”. This will generate a footer on each page with a link to the specific file on github that generated that view. The user can then edit a file and submit a PR for you to approve and update the wiki.
+If you would like to enable the "edit on github" feature, you can set the `enableEditLink` to true. With this setup, You will need to set the `editBranch` attribute in the dendron.yml file to "main/src". This will generate a footer on each page with a link to the specific file on github that generated that view. The user can then edit a file and submit a PR for you to approve and update the wiki.
 
 ### Buildspec.yml
 
