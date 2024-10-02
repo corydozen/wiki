@@ -2,7 +2,7 @@
 id: cicd-wiki
 title: Cicd Wiki
 desc: ""
-updated: 1726766516204
+updated: 1727903111892
 created: 1725054269958
 ---
 
@@ -24,9 +24,11 @@ I will be using AWS's CDK and an open source tool called Dendron. There will be 
 
 ## Get a domain
 
-Once you're logged in to your AWS account, visit [Route 53's domain search](https://us-east-1.console.aws.amazon.com/route53/domains/home#/DomainSearch) to select your domain. I chose https://corymartin.click because the `click` TLD was the cheapest available through AWS. Three dollars per year! If you'd like to see other TLD prices, [here is a spreadsheet I created with those prices](https://docs.google.com/spreadsheets/d/1oVYl6f69f8w_J3JUSFsi6oZV5vHn9CzsIJSX9KE5qnY/edit).
+Once you're logged in to your AWS account, visit [Route 53's domain search](https://us-east-1.console.aws.amazon.com/route53/domains/home#/DomainSearch) to select your domain. I chose https://corymartin.click because the `click` TLD ([top-level domain](https://en.wikipedia.org/wiki/Top-level_domain)) was the cheapest available through AWS. Three dollars per year! If you'd like to see other TLD prices, [here is a spreadsheet I created with those prices](https://docs.google.com/spreadsheets/d/1oVYl6f69f8w_J3JUSFsi6oZV5vHn9CzsIJSX9KE5qnY/edit).
 
 Once you've selected your domain, enter your contact information and follow the directions for registration. Be sure the "Turn on privacy protection" checkbox is checked.
+
+If you do not check the "privacy protection" box, your contact information will be publicly accessible, potentially including your home address. Anyone can visit [whois.com](https://www.whois.com/whois/) and search for a domain's contact info. AWS provides the option for privacy protection that obfuscates your contact information. It essentially registers AWS as the contact for your domain. Folks can still contact you regarding your domain, but they'll go through AWS to do so instead of doxxing you.
 
 ## Get a certificate
 
@@ -36,9 +38,9 @@ Once you've selected your domain, enter your contact information and follow the 
 1. Enter the domain you chose. I entered `corymartin.click`
 1. Leave all other default values and click "Request"
 1. On the subsequent page, find the ARN and copy it into a text editor. You will need it later.
-1. On that same page, you should also see a section labeled "Domains" with a button that says "Create records in Route 53". Click that button. Then confirm that selection by clicking "Create Records" on the next page.
+1. On the same page, you should also see a section labeled "Domains" with a button that says "Create records in Route 53". Click that button. Then confirm that selection by clicking "Create Records" on the next page.
 
-That's all you have to do for this step. If you'd like, you can navigate back to Route 53 to see the records you just created.
+Completing steps 1–7 will request your certificate and connect it to your domain in Route 53. If you'd like, you can navigate back to Route 53 to see the records you just created.
 It may take a little time for the certificate to be granted. But you can continue with the next steps while waiting for the certificate.
 
 ## Fork my repo
@@ -212,3 +214,7 @@ This simply creates an empty `config.ts` file so that the cdk stack will success
 #### Create invalidation
 
 When you update your wiki, you will want to tell Cloudfront not to serve up its old, cached version of your site anymore. The way to do that is to create an invalidation. You can read more about invalidations [here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html). You can see in the `buildspec.yml` file, the second-to-last command uses the aws cli tool to create an invalidation for all the objects within your cloudfront distribution. In order to do this, it needs to know your distribution's ID. That's why we stored it in your secret. You can see at the top of the `buildspec.yml` file, in the env->secrets-manager section, we are defining an environment variable called `DISTRIBUTION_ID` whose value comes from the attribute called `DISTRIBUTION_ID` within the secret named `WIKI`.
+
+## Go Forth and Wiki!
+
+If you use this paradigm, I'd love to hear from you! Tag me on threads (https://www.threads.net/@murribu/) and let me know how to boost your signal. Or, feel free to submit a PR to the repo if you see an improvement.
