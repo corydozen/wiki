@@ -27,8 +27,8 @@ export class Codebuild extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const pipeline = new Pipeline(this, "WikiPipeline", {
-      pipelineName: "WikiPipeline",
+    const pipeline = new Pipeline(this, "WikiDemoPipeline", {
+      pipelineName: "WikiDemoPipeline",
       pipelineType: PipelineType.V2,
       executionMode: ExecutionMode.QUEUED,
       // triggers: [

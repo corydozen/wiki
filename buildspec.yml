@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   secrets-manager:
-    DISTRIBUTION_ID: WIKI:DISTRIBUTION_ID
+    DISTRIBUTION_ID: WIKIDEMO:DISTRIBUTION_ID
 
 phases:
   install:
@@ -14,15 +14,15 @@ phases:
       - npm install -g aws-cdk
   pre_build:
     commands:
-      - yarn
+      - npm i
       - wait $!
-      - yarn build
+      - npm run build
       - cd src
       - npx dendron publish export
       - cd ..
   build:
     commands:
-      - npx cdk deploy WikiHostingStack --require-approval never
+      - npx cdk deploy WikiDemoHostingStack --require-approval never
       - aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "/*"
       - echo Build completed on `date`
 artifacts:

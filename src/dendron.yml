@@ -87,7 +87,7 @@ publishing:
     enablePrettyRefs: true
     enableKatex: true
     copyAssets: true
-    siteUrl: https://corymartin.click
+    siteUrl: https://demo.corymartin.click
     siteIndex: home
     siteHierarchies:
         - home
@@ -103,7 +103,7 @@ publishing:
         editLinkText: Edit this page on GitHub
         editBranch: main/src
         editViewMode: edit
-        editRepository: https://github.com/murribu/wiki
+        editRepository: https://github.com/corydozen/wiki
     enableSiteLastModified: true
     enableFrontmatterTags: true
     enableHashesForFMTags: false

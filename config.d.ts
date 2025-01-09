@@ -1,5 +1,5 @@
 export declare const config: {
-  repoOwner: string;
-  repo: string;
-  connectionArn: string;
+    repoOwner: string;
+    repo: string;
+    connectionArn: string;
 };

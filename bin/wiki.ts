@@ -8,5 +8,5 @@ const region = "us-east-1";
 
 const app = new App();
 
-new Codebuild(app, "WikiCodebuildStack", { env: { region } });
-new HostingStack(app, "WikiHostingStack", { env: { region } });
+new Codebuild(app, "WikiDemoCodebuildStack", { env: { region } });
+new HostingStack(app, "WikiDemoHostingStack", { env: { region } });

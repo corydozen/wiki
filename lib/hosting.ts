@@ -20,7 +20,7 @@ export class HostingStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const secret = Secret.fromSecretNameV2(this, "Secret", "WIKI");
+    const secret = Secret.fromSecretNameV2(this, "Secret", "WIKIDEMO");
 
     const CERT_ARN = secret
       .secretValueFromJson("CERT_ARN")
