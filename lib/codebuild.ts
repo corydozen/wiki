@@ -31,20 +31,6 @@ export class Codebuild extends Stack {
       pipelineName: "WikiDemoPipeline",
       pipelineType: PipelineType.V2,
       executionMode: ExecutionMode.QUEUED,
-      // triggers: [
-      //   {
-      //     providerType: ProviderType.CODE_STAR_SOURCE_CONNECTION,
-      //     gitConfiguration: {
-      //       sourceAction,
-      //       pushFilter: [
-      //         {
-      //           branchesIncludes: ["main"],
-      //           filePathsIncludes: ["src/**"],
-      //         },
-      //       ],
-      //     },
-      //   },
-      // ],
     });
 
     const artifact = new Artifact();

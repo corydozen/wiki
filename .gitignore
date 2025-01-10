@@ -9,3 +9,6 @@ cdk.out
 
 !config.d.ts
 config.ts
+
+pyproject.toml
+.python-version

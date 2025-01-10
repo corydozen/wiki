@@ -90,14 +90,5 @@ export class HostingStack extends Stack {
       distribution,
       distributionPaths: ["/*"],
     });
-
-    // This will not synth locally, so it'll be a manual step for now
-    // new ARecord(this, "AliasRecord", {
-    //   zone: HostedZone.fromLookup(this, "HostedZone", {
-    //     domainName: DOMAIN,
-    //   }),
-    //   target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
-    //   recordName: DOMAIN,
-    // });
   }
 }
